@@ -1,0 +1,7 @@
+{
+  "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "javascript.format.enable": false,
+  "editor.tabSize": 2,
+  "prettier.configPath": ".prettierrc"
+}

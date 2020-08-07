@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "name": "geojson.net",
-  "alias": "geojson.net",
+  "name": "appDevs Golf Tackle",
+  "alias": "appDevs Golf Tackle",
   "builds": [
     {"src": "package.json", "use": "@now/static-build", "config": { "newPipeline": true }},
     {"src": "server.js", "use": "@now/node-server", "config": { "newPipeline": true }}
@@ -12,7 +12,7 @@
     { "src": "/(.*)", "dest": "/$1"}
   ],
   "env": {
-    "NODE_ENV": "production",
+    "NODE_ENV": "dev",
     "GITHUB_CLIENT_ID": "@geojsonnet-github-client-id",
     "GITHUB_CLIENT_SECRET": "@geojsonnet-github-client-secret",
     "SESSION_SECRET": "@geojsonnet-session-secret"
