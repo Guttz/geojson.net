@@ -25,18 +25,20 @@ export default class FileBar extends React.Component {
   blindImport = () => {
     this.fileInputRef.current.click();
   };
-  onFileInputChange = async e => {
+  onFileInputChange = async (e) => {
     const { files } = e.target;
     const { geojson, setGeojson } = this.props;
-    const geojsons = await Promise.all([...files].map(file => {
-      return new Promise(resolve => {
-        const reader = new FileReader();
-        reader.readAsText(file);
-        reader.addEventListener("load", () =>
-          resolve(magicFile(reader.result))
-        );
-      });
-    }));
+    const geojsons = await Promise.all(
+      [...files].map((file) => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsText(file);
+          reader.addEventListener("load", () =>
+            resolve(magicFile(reader.result))
+          );
+        });
+      })
+    );
     setGeojson(mergeGeojson([geojson, ...geojsons]));
   };
   downloadTopo = () => {
@@ -44,13 +46,13 @@ export default class FileBar extends React.Component {
     var content = JSON.stringify(
       topojson.topology(
         {
-          collection: JSON.parse(JSON.stringify(geojson))
+          collection: JSON.parse(JSON.stringify(geojson)),
         },
         {
-          "property-transform": function(properties, key, value) {
+          "property-transform": function (properties, key, value) {
             properties[key] = value;
             return true;
-          }
+          },
         }
       )
     );
@@ -61,7 +63,7 @@ export default class FileBar extends React.Component {
   download = (content, filename, type) => {
     saveAs(
       new Blob([content], {
-        type
+        type,
       }),
       filename
     );
@@ -71,7 +73,7 @@ export default class FileBar extends React.Component {
     const { geojson } = this.props;
     this.download(
       togpx(geojson, {
-        creator: "geojson.net"
+        creator: "geojson.net",
       }),
       "map.gpx",
       "text/xml;charset=utf-8"
@@ -119,49 +121,49 @@ export default class FileBar extends React.Component {
     const exportFormats = [
       {
         title: "GeoJSON",
-        action: this.downloadGeoJSON
+        action: this.downloadGeoJSON,
       },
       {
         title: "TopoJSON",
-        action: this.downloadTopo
+        action: this.downloadTopo,
       },
       {
         title: "GPX",
-        action: this.downloadGPX
+        action: this.downloadGPX,
       },
       {
         title: "CSV",
-        action: this.downloadDSV
+        action: this.downloadDSV,
       },
       {
         title: "Shapefile",
-        action: this.downloadShp
+        action: this.downloadShp,
       },
       {
         title: "KML",
-        action: this.downloadKML
+        action: this.downloadKML,
       },
       {
         title: "WKT",
-        action: this.downloadWKT
-      }
+        action: this.downloadWKT,
+      },
     ];
     var actions = [
       {
         title: "Save",
-        children: exportFormats
+        children: exportFormats,
       },
       {
         title: "New",
-        action: function() {
+        action: function () {
           window.open(
             window.location.origin + window.location.pathname + "#new"
           );
-        }
+        },
       },
       {
         title: "Meta",
-        action: function() {},
+        action: function () {},
         children: [
           {
             title: "Clear",
@@ -174,7 +176,7 @@ export default class FileBar extends React.Component {
               ) {
                 setGeojson({ type: "FeatureCollection", features: [] });
               }
-            }
+            },
           },
           {
             title: "Random: Points",
@@ -190,9 +192,9 @@ export default class FileBar extends React.Component {
                 type: "FeatureCollection",
                 features: fc.features.concat(
                   geojsonRandom.point(count).features
-                )
+                ),
               });
-            }
+            },
           },
           {
             title: "Add bboxes",
@@ -200,7 +202,7 @@ export default class FileBar extends React.Component {
             action: () => {
               const { setGeojson, geojson } = this.props;
               setGeojson(geojsonExtent.bboxify(geojson));
-            }
+            },
           },
           {
             title: "Simplify",
@@ -208,7 +210,7 @@ export default class FileBar extends React.Component {
             action: () => {
               const { setGeojson, geojson } = this.props;
               setGeojson(simplify(geojson));
-            }
+            },
           },
           {
             title: "Flatten Multi Features",
@@ -217,7 +219,7 @@ export default class FileBar extends React.Component {
             action: () => {
               const { setGeojson, geojson } = this.props;
               setGeojson(geojsonFlatten(geojson));
-            }
+            },
           },
           // https://developers.google.com/maps/documentation/utilities/polylinealgorithm
           {
@@ -233,7 +235,7 @@ export default class FileBar extends React.Component {
               } catch (e) {
                 alert("Sorry, we were unable to decode that polyline");
               }
-            }
+            },
           },
           {
             title: "Load WKB Base64 Encoded String",
@@ -251,12 +253,12 @@ export default class FileBar extends React.Component {
                   "Sorry, we were unable to decode that Base64 encoded WKX data"
                 );
               }
-            }
+            },
           },
           {
             title: "Load WKB Hex Encoded String",
             alt: "Decode and show WKX data",
-            action: function() {
+            action: function () {
               const input = prompt("Enter your Hex encoded WKB/EWKB");
               try {
                 var decoded = wkx.Geometry.parse(Buffer.from(input, "hex"));
@@ -268,12 +270,12 @@ export default class FileBar extends React.Component {
                   "Sorry, we were unable to decode that Hex encoded WKX data"
                 );
               }
-            }
+            },
           },
           {
             title: "Load WKT String",
             alt: "Decode and show WKX data",
-            action: function() {
+            action: function () {
               const input = prompt("Enter your WKT/EWKT String");
               try {
                 var decoded = wkx.Geometry.parse(input);
@@ -283,10 +285,10 @@ export default class FileBar extends React.Component {
                 console.error(e);
                 alert("Sorry, we were unable to decode that WKT data");
               }
-            }
-          }
-        ]
-      }
+            },
+          },
+        ],
+      },
     ];
 
     actions.unshift({
@@ -295,7 +297,7 @@ export default class FileBar extends React.Component {
         {
           title: "File",
           alt: "GeoJSON, TopoJSON, GTFS, KML, CSV, GPX and OSM XML supported",
-          action: this.blindImport
+          action: this.blindImport,
         },
         ,
         /*{
@@ -308,53 +310,59 @@ export default class FileBar extends React.Component {
           title: "GitHub",
           alt: "GeoJSON files in GitHub Repositories",
           authenticated: true,
-          action: this.props.toggleGithubModal
-        }
-      ]
+          action: this.props.toggleGithubModal,
+        },
+      ],
     });
 
     return (
       <div className="inline-flex">
-        <img src="https://appdevelopment.de/wp-content/uploads/2019/02/AppDev-1a.png" alt="Nature" class="responsive" height="60"></img>
-        <div
-          className="db bn pa2 outline-0 disappear-child relative pointer black hover-bg-yellow "
-        >
-        </div>
-        {true ? actions.map((item, i) => {
-          return (
-            <div
-              hidden={true}
-              key={i}
-              style={{ zIndex: 999, color: 'white' }}
-              onClick={item.action}
-              className="db bn pa2 outline-0 disappear-child relative pointer black hover-bg-yellow "
-            >
-              {item.title}
-              {item.children ? (
-                <div
-                  hidden={true}
-                  className="child bg-white absolute w4 bt pv2"
-                  style={{
-                    top: 32,
-                    left: 0
-                  }}
-                >
-                  {item.children.map((child, i) => {
-                    return (
-                      <div
-                        onClick={child.action}
-                        key={i}
-                        className={`bn pv1 ph2 outline-0 tl db hover-bg-yellow w-100 pointer`}
-                      >
-                        {child.title}
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : null}
-            </div>
-          );
-        }): <div></div>}
+        <img
+          src="https://appdevelopment.de/wp-content/uploads/2019/02/AppDev-1a.png"
+          alt="Nature"
+          className="responsive"
+          height="60"
+        ></img>
+        <div className="db bn pa2 outline-0 disappear-child relative pointer black hover-bg-yellow "></div>
+        {true ? (
+          actions.map((item, i) => {
+            return (
+              <div
+                hidden={true}
+                key={i}
+                style={{ zIndex: 999, color: "white" }}
+                onClick={item.action}
+                className="db bn pa2 outline-0 disappear-child relative pointer black hover-bg-yellow "
+              >
+                {item.title}
+                {item.children ? (
+                  <div
+                    hidden={true}
+                    className="child bg-white absolute w4 bt pv2"
+                    style={{
+                      top: 32,
+                      left: 0,
+                    }}
+                  >
+                    {item.children.map((child, i) => {
+                      return (
+                        <div
+                          onClick={child.action}
+                          key={i}
+                          className={`bn pv1 ph2 outline-0 tl db hover-bg-yellow w-100 pointer`}
+                        >
+                          {child.title}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })
+        ) : (
+          <div></div>
+        )}
         <input
           type="file"
           className="dn"
