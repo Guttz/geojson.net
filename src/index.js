@@ -19,6 +19,7 @@ import Dropzone from "react-dropzone";
 import magicFile from "./lib/magic_file";
 import mergeGeojson from "./lib/merge_geojson";
 import { layers } from "./layers";
+import "babel-polyfill";
 
 const client = new ApolloClient({
   link: createHttpLink({ uri: "/github/graphql", credentials: 'include' }),
