@@ -315,17 +315,24 @@ export default class FileBar extends React.Component {
 
     return (
       <div className="inline-flex">
-        {actions.map((item, i) => {
+        <img src="https://appdevelopment.de/wp-content/uploads/2019/02/AppDev-1a.png" alt="Nature" class="responsive" height="60"></img>
+        <div
+          className="db bn pa2 outline-0 disappear-child relative pointer black hover-bg-yellow "
+        >
+        </div>
+        {true ? actions.map((item, i) => {
           return (
             <div
+              hidden={true}
               key={i}
-              style={{ zIndex: 999 }}
+              style={{ zIndex: 999, color: 'white' }}
               onClick={item.action}
               className="db bn pa2 outline-0 disappear-child relative pointer black hover-bg-yellow "
             >
               {item.title}
               {item.children ? (
                 <div
+                  hidden={true}
                   className="child bg-white absolute w4 bt pv2"
                   style={{
                     top: 32,
@@ -347,7 +354,7 @@ export default class FileBar extends React.Component {
               ) : null}
             </div>
           );
-        })}
+        }): <div></div>}
         <input
           type="file"
           className="dn"
