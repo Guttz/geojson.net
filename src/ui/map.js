@@ -9,8 +9,9 @@ import geojsonRewind from "geojson-rewind";
 import simplestyle from "./simplestyle";
 import iconRetinaUrl from "../../css/marker-icon-2x.png";
 import iconUrl from "../../css/marker-icon.png";
-import treeIconRetinaUrl from "../../css/tree-icon-2x.png";
-import treeIconUrl from "../../css/tree-icon.png";
+import treeIconSVG from "../../css/tree-icon.svg";
+import teeIconSVG from "../../css/tee-icon.svg";
+import bunkerIconSVG from "../../css/bunker-icon.svg";
 import shadowUrl from "../../css/marker-shadow.png";
 
 const polygon = <path d="M15 6l8.56 6.219-3.27 10.062H9.71L6.44 12.22z" />;
@@ -23,17 +24,6 @@ const point = (
 L.Marker.prototype.options.icon = new L.Icon({
   iconUrl,
   iconRetinaUrl,
-  shadowUrl,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  tooltipAnchor: [16, -28],
-  shadowSize: [41, 41],
-});
-
-L.Marker.prototype.options.treeIcon = new L.Icon({
-  treeIconUrl,
-  treeIconRetinaUrl,
   shadowUrl,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
@@ -155,12 +145,13 @@ export default class Map extends React.Component {
         position: "topleft",
         callback: null,
         kind: "",
+        background: "black",
       },
 
       onAdd: function (map) {
         var container = L.DomUtil.create(
             "div",
-            "leaflet-control leaflet-bar bg-white black hover-bg-purple hover-white"
+            "leaflet-control leaflet-bar bg-white black hover-bg-yellow hover-white"
           ),
           link = L.DomUtil.create("a", "", container);
 
@@ -168,9 +159,8 @@ export default class Map extends React.Component {
         link.title = "Create a new " + this.options.kind;
         const iconContainer = link.appendChild(document.createElement("div"));
         ReactDOM.render(
-          <div className="icon-marker">
-            <img src={treeIconUrl} alt="Nature"></img>
-            <span>Tree</span>
+          <div>
+            <img src={this.options.svgPath} alt="Tree Marker" />
           </div>,
           iconContainer
         );
@@ -187,13 +177,49 @@ export default class Map extends React.Component {
       },
     });
 
-    var NewSVGControl = new L.NewSVGControl();
-    map.addControl(NewSVGControl);
+    L.NewTreeControl = L.NewSVGControl.extend({
+      options: {
+        position: "topleft",
+        callback: () =>
+          this.startPolygon(null, {
+            color: "green",
+            fill: true,
+            fillColor: "green",
+          }),
+        kind: "Tree Area",
+        svgPath: treeIconSVG,
+      },
+    });
 
-    map.addControl(new L.NewMarkerControl());
-    map.addControl(new L.NewLineControl());
+    L.NewTeeControl = L.NewSVGControl.extend({
+      options: {
+        position: "topleft",
+        callback: map.editTools.startMarker,
+        kind: "Tee Spot",
+        svgPath: teeIconSVG,
+      },
+    });
+
+    L.NewBunkerControl = L.NewSVGControl.extend({
+      options: {
+        position: "topleft",
+        callback: map.editTools.startPolygon,
+        kind: "Bunker Area",
+        svgPath: bunkerIconSVG,
+      },
+    });
+
+    var NewTreeControl = new L.NewTreeControl();
+    var NewTeeControl = new L.NewTeeControl();
+    var NewBunkerControl = new L.NewBunkerControl();
+    map.addControl(NewTreeControl);
+    map.addControl(NewTeeControl);
+    map.addControl(NewBunkerControl);
+
+    // map.addControl(new L.NewMarkerControl());
+    // map.addControl(new L.NewLineControl());
     map.addControl(new L.NewPolygonControl());
-    map.addControl(new L.NewRectangleControl());
+    // map.addControl(new L.NewRectangleControl());
     map.addLayer(featuresLayer);
 
     map
@@ -321,9 +347,10 @@ export default class Map extends React.Component {
     const { map } = this.state;
     map.editTools.startPolyline();
   };
-  startPolygon = () => {
+  startPolygon = (latLng, options) => {
     const { map } = this.state;
-    map.editTools.startPolygon();
+    const createdPolygon = map.editTools.startPolygon(latLng, options);
+    return createdPolygon;
   };
   startRectangle = () => {
     const { map } = this.state;
