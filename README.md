@@ -1,7 +1,6 @@
-[![Circle CI](https://circleci.com/gh/tmcw/geojson.net/tree/gh-pages.svg?style=svg)](https://circleci.com/gh/mapbox/geojson.io/tree/gh-pages)
-# geojson.net
+# Golfpace WebGUI - appDev
 
-_Son of geojson.io_
+Company facing Web Application developed by **appDev GmbH & Co. KG** that enables Golf Clubs to create marks and zone definitions for its Golf Courts. This app is based on [geojson.net](https://github.com/GeoJSON-Net/GeoJSON.Net), powered by React.js, Leaflet and Mapbox.
 
 ## Development
 
