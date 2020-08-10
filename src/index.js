@@ -39,7 +39,7 @@ class App extends React.Component {
     geojson: initialGeojson,
     changeFrom: undefined,
     dropzoneActive: false,
-    showPanel: true
+    showPanel: false
   };
   togglePanel = () => {
     this.setState(({ showPanel }) => ({
