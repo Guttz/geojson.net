@@ -54,8 +54,8 @@ export default class User extends React.Component {
             );
           return (
             <div className="inline-flex items-center">
-              <img src={data.viewer.avatarUrl} className="w2 h2 mr2" />
-              {data.viewer.login}
+              <img width={20} height={20} src={data.viewer ? data.viewer.avatarUrl : "https://cdn.icon-icons.com/icons2/1248/PNG/256/user_84308.png"} className="w2 h2 mr2" />
+              {data.viewer ? data.viewer.login : 'not logged in'}
               <a
                 className="ph2 pointer hover-bg-yellow pa2 ml2"
                 href="/auth/github/logout"
