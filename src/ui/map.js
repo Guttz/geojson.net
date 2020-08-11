@@ -21,6 +21,15 @@ const point = (
   <path d="M15 24.152L7 13.015c-.747-4.83 1.92-7.246 8-7.246s8.747 2.415 8 7.246l-8 11.137z" />
 );
 
+const styleLayerConfig = {
+  TREE: {
+    golfCourtType: "TREE",
+    color: "green",
+    fill: true,
+    fillColor: "green",
+  },
+};
+
 L.Marker.prototype.options.icon = new L.Icon({
   iconUrl,
   iconRetinaUrl,
@@ -296,6 +305,11 @@ export default class Map extends React.Component {
     const geojson = featuresLayer.toGeoJSON();
     featuresLayer.clearLayers();
     L.geoJson(geojson).eachLayer((layer) => {
+      // Golf Styling Options according to styleLayerConfig
+      const updatedOptions =
+        styleLayerConfig[layer.feature.properties["golfCourtType"]];
+      layer.options = { ...layer.options, ...updatedOptions };
+
       featuresLayer.addLayer(layer);
       // layer must be added before editing can be enabled.
       layer.enableEdit();
@@ -303,26 +317,6 @@ export default class Map extends React.Component {
     });
     this.updateFromMap(e);
   };
-  styleGolfMap = (e) => {
-    const {
-      map: {
-        editTools: { featuresLayer },
-      },
-    } = this.state;
-    debugger
-    const geojson = featuresLayer.toGeoJSON();
-    featuresLayer.clearLayers();
-    L.geoJson(geojson).eachLayer((layer) => {
-      // layer.features.options - geoJSON features
-      // layer.options -- Leaflet styles
-      featuresLayer.addLayer(layer);
-      
-      // layer must be added before editing can be enabled.
-      layer.enableEdit();
-      layer.on("click", this.clickPolygon);
-    });
-    this.updateFromMap(e);
-  }
   clickPolygon = (e) => {
     const { target } = e;
     if (
@@ -364,8 +358,8 @@ export default class Map extends React.Component {
       } = this.state;
       featuresLayer.clearLayers();
       L.geoJson(geojson).eachLayer((layer) => {
-        featuresLayer.addLayer(layer);
         // layer must be added before editing can be enabled.
+        featuresLayer.addLayer(layer);
         layer.enableEdit();
       });
       featuresLayer.eachLayer(this.bindLayerPopup);
@@ -378,8 +372,6 @@ export default class Map extends React.Component {
   startPolygon = (latLng, options) => {
     const { map } = this.state;
     const createdPolygon = map.editTools.startPolygon(latLng, options);
-    createdPolygon.setStyle(options);
-    createdPolygon.feature.properties = {test: 'aaa'};
     return createdPolygon;
   };
   startRectangle = () => {
