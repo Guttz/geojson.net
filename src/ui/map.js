@@ -288,8 +288,12 @@ export default class Map extends React.Component {
         editTools: { featuresLayer },
       },
     } = this.state;
+    // Ading golf type according to the selected control
+    featuresLayer._layers[e.layer._leaflet_id].feature = {
+      type: "Feature",
+      properties: { golfCourtType: e.layer.options["golfCourtType"] },
+    };
     const geojson = featuresLayer.toGeoJSON();
-    debugger
     featuresLayer.clearLayers();
     L.geoJson(geojson).eachLayer((layer) => {
       featuresLayer.addLayer(layer);
