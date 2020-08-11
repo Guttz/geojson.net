@@ -1,0 +1,38 @@
+//
+//  GeoJSONFeature+type.swift
+//  GolfPaceModel
+//
+//  Created by Luca Antonacci on 17.01.20.
+//  Copyright © 2020 appDev GmbH & Co. KG. All rights reserved.
+//
+
+import Foundation
+import GeoJSONModel
+
+public extension GeoJSONFeature {
+    
+    enum FeatureType: String {
+        case green = "GREEN" 
+        case fairway = "FAIRWAY"
+        case bunker = "BUNKER" - harzard
+        case water = "WATER" - harzard
+        case tee = "TEE" --- Tee tem que ter uma variável "color": "red, yellow, green"
+        case path = "PATH"
+        case tree = "TREE"
+        case rough = "ROUGH" ----- Variáveis estáticas até aqui
+        case penaltyRed = "PENALTY_RED"
+        case penaltyYellow = "PENALTY_YELLOW"
+        case out = "OUT"
+        case unknown = "UNKNOWN"
+    }
+    
+    var type: FeatureType {
+        get {
+            guard let type: String = self.properties?.jsonValue("type"), let featureType = FeatureType(rawValue: type) else {
+                return .unknown
+            }
+            return featureType
+        }
+    }
+    
+}

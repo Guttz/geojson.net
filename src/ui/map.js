@@ -48,7 +48,7 @@ export default class Map extends React.Component {
     const { layer } = this.props;
     L.control.scale().setPosition("bottomright").addTo(map);
     map.zoomControl.setPosition("bottomright");
-    map.setView([20, 0], 2);
+    map.setView([20, 0], 10);
 
     L.hash(map);
     const metric =
@@ -182,6 +182,7 @@ export default class Map extends React.Component {
         position: "topleft",
         callback: () =>
           this.startPolygon(null, {
+            golfCourtType: "TREE",
             color: "green",
             fill: true,
             fillColor: "green",
@@ -216,10 +217,10 @@ export default class Map extends React.Component {
     map.addControl(NewTeeControl);
     map.addControl(NewBunkerControl);
 
-    // map.addControl(new L.NewMarkerControl());
-    // map.addControl(new L.NewLineControl());
+    map.addControl(new L.NewMarkerControl());
+    map.addControl(new L.NewLineControl());
     map.addControl(new L.NewPolygonControl());
-    // map.addControl(new L.NewRectangleControl());
+    map.addControl(new L.NewRectangleControl());
     map.addLayer(featuresLayer);
 
     map
@@ -265,6 +266,7 @@ export default class Map extends React.Component {
     layer.feature.properties = update.updated_src;
     this.updateFromMap();
   };
+
   makePopup = (layer) => {
     const { setGeojson } = this.props;
     const div = document.createElement("div");
@@ -287,6 +289,7 @@ export default class Map extends React.Component {
       },
     } = this.state;
     const geojson = featuresLayer.toGeoJSON();
+    debugger
     featuresLayer.clearLayers();
     L.geoJson(geojson).eachLayer((layer) => {
       featuresLayer.addLayer(layer);
@@ -296,6 +299,26 @@ export default class Map extends React.Component {
     });
     this.updateFromMap(e);
   };
+  styleGolfMap = (e) => {
+    const {
+      map: {
+        editTools: { featuresLayer },
+      },
+    } = this.state;
+    debugger
+    const geojson = featuresLayer.toGeoJSON();
+    featuresLayer.clearLayers();
+    L.geoJson(geojson).eachLayer((layer) => {
+      // layer.features.options - geoJSON features
+      // layer.options -- Leaflet styles
+      featuresLayer.addLayer(layer);
+      
+      // layer must be added before editing can be enabled.
+      layer.enableEdit();
+      layer.on("click", this.clickPolygon);
+    });
+    this.updateFromMap(e);
+  }
   clickPolygon = (e) => {
     const { target } = e;
     if (
@@ -317,6 +340,7 @@ export default class Map extends React.Component {
     featuresLayer.eachLayer(this.bindLayerPopup);
   };
   componentDidUpdate(prevProps, prevState) {
+    console.log("updated");
     const { baseLayerGroup, map } = this.state;
     const { showPanel, layer, geojson, changeFrom } = this.props;
     if (prevProps.showPanel !== showPanel) {
@@ -350,6 +374,8 @@ export default class Map extends React.Component {
   startPolygon = (latLng, options) => {
     const { map } = this.state;
     const createdPolygon = map.editTools.startPolygon(latLng, options);
+    createdPolygon.setStyle(options);
+    createdPolygon.feature.properties = {test: 'aaa'};
     return createdPolygon;
   };
   startRectangle = () => {

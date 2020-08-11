@@ -2,6 +2,10 @@
 
 Company facing Web Application developed by **appDev GmbH & Co. KG** that enables Golf Clubs to create marks and zone definitions for its Golf Courts. This app is based on [geojson.net](https://github.com/GeoJSON-Net/GeoJSON.Net), powered by React.js, Leaflet and Mapbox.
 
+## Todo
+
+[] - Create stylize function inside map.js to style geoJSON features according to it's properties.
+
 ## Development
 
 First install dependencies: `yarn` is recommended, `npm` should also work: run
