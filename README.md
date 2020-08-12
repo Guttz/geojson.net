@@ -6,6 +6,10 @@ Company facing Web Application developed by **appDev GmbH & Co. KG** that enable
 
 [] - Create stylize function inside map.js to style geoJSON features according to it's properties.
 
+## Golfpace app oberservations
+
+Business logic used for the GolfApp are marked with a [GOLFPACE] Tag in the code base.
+
 ## Development
 
 First install dependencies: `yarn` is recommended, `npm` should also work: run

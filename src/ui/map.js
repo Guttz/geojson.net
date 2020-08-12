@@ -13,6 +13,7 @@ import treeIconSVG from "../../css/tree-icon.svg";
 import teeIconSVG from "../../css/tee-icon.svg";
 import bunkerIconSVG from "../../css/bunker-icon.svg";
 import shadowUrl from "../../css/marker-shadow.png";
+import golfStyleLayerConfig from "./map_golfStyle";
 
 const polygon = <path d="M15 6l8.56 6.219-3.27 10.062H9.71L6.44 12.22z" />;
 const line = <path d="M6 7l8.31 3.99v7.822l8.31 4.746" />;
@@ -235,7 +236,7 @@ export default class Map extends React.Component {
     map
       .on("editable:dragend", this.updateFromMap)
       .on("editable:created", this.updateFromMap)
-      .on("editable:drawing:commit", this.ensureMapIsGeoJSON)
+      .on("editable:drawing:commit", this.styleGolfMapIsGeoJson)
       .on("editable:editing", this.updateFromMap);
 
     this.setState({
@@ -291,13 +292,13 @@ export default class Map extends React.Component {
     div.className = "ispopup";
     return div;
   };
-  ensureMapIsGeoJSON = (e) => {
+  styleGolfMapIsGeoJson = (e) => {
     const {
       map: {
         editTools: { featuresLayer },
       },
     } = this.state;
-    // Ading golf type according to the selected control
+    // Ading golf type according to the selected control - [GOLFPACE]
     featuresLayer._layers[e.layer._leaflet_id].feature = {
       type: "Feature",
       properties: { golfCourtType: e.layer.options["golfCourtType"] },
@@ -305,7 +306,7 @@ export default class Map extends React.Component {
     const geojson = featuresLayer.toGeoJSON();
     featuresLayer.clearLayers();
     L.geoJson(geojson).eachLayer((layer) => {
-      // Golf Styling Options according to styleLayerConfig
+      // Golf Styling Options according to styleLayerConfig - [GOLFPACE]
       const updatedOptions =
         styleLayerConfig[layer.feature.properties["golfCourtType"]];
       layer.options = { ...layer.options, ...updatedOptions };
