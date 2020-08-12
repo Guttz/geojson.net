@@ -9,9 +9,14 @@ import geojsonRewind from "geojson-rewind";
 import simplestyle from "./simplestyle";
 import iconRetinaUrl from "../../css/marker-icon-2x.png";
 import iconUrl from "../../css/marker-icon.png";
+import greenIconSVG from "../../css/green-icon.svg";
+import waterIconSVG from "../../css/water-icon.svg";
 import treeIconSVG from "../../css/tree-icon.svg";
+import fairwayIconSVG from "../../css/fairway-icon.svg";
+import roughIconSVG from "../../css/rough-icon.svg";
 import teeIconSVG from "../../css/tee-icon.svg";
 import bunkerIconSVG from "../../css/bunker-icon.svg";
+import customIconSVG from "../../css/custom-icon.svg";
 import shadowUrl from "../../css/marker-shadow.png";
 import golfStyleLayerConfig from "./map_golfStyle";
 
@@ -21,15 +26,6 @@ const rectangle = <path d="M7.5 7.5h15v15h-15z" />;
 const point = (
   <path d="M15 24.152L7 13.015c-.747-4.83 1.92-7.246 8-7.246s8.747 2.415 8 7.246l-8 11.137z" />
 );
-
-const styleLayerConfig = {
-  TREE: {
-    golfCourtType: "TREE",
-    color: "green",
-    fill: true,
-    fillColor: "green",
-  },
-};
 
 L.Marker.prototype.options.icon = new L.Icon({
   iconUrl,
@@ -58,7 +54,7 @@ export default class Map extends React.Component {
     const { layer } = this.props;
     L.control.scale().setPosition("bottomright").addTo(map);
     map.zoomControl.setPosition("bottomright");
-    map.setView([20, 0], 10);
+    map.setView([50.1200896, 9.081323], 16);
 
     L.hash(map);
     const metric =
@@ -127,7 +123,7 @@ export default class Map extends React.Component {
       options: {
         position: "topleft",
         callback: map.editTools.startPolygon,
-        kind: "polygon",
+        kind: "Custom Area",
         icon: polygon,
       },
     });
@@ -187,50 +183,92 @@ export default class Map extends React.Component {
       },
     });
 
-    L.NewTreeControl = L.NewSVGControl.extend({
+    L.NewGreenControl = L.NewSVGControl.extend({
       options: {
         position: "topleft",
-        callback: () =>
-          this.startPolygon(null, {
-            golfCourtType: "TREE",
-            color: "green",
-            fill: true,
-            fillColor: "green",
-          }),
-        kind: "Tree Area",
-        svgPath: treeIconSVG,
+        callback: () => this.startPolygon(null, golfStyleLayerConfig["GREEN"]),
+        kind: "Green Area",
+        svgPath: greenIconSVG,
       },
     });
 
-    L.NewTeeControl = L.NewSVGControl.extend({
+    L.NewWaterControl = L.NewSVGControl.extend({
       options: {
         position: "topleft",
-        callback: map.editTools.startMarker,
-        kind: "Tee Spot",
-        svgPath: teeIconSVG,
+        callback: () => this.startPolygon(null, golfStyleLayerConfig["WATER"]),
+        kind: "Water Area",
+        svgPath: waterIconSVG,
       },
     });
 
     L.NewBunkerControl = L.NewSVGControl.extend({
       options: {
         position: "topleft",
-        callback: map.editTools.startPolygon,
+        callback: () => this.startPolygon(null, golfStyleLayerConfig["BUNKER"]),
         kind: "Bunker Area",
         svgPath: bunkerIconSVG,
       },
     });
 
-    var NewTreeControl = new L.NewTreeControl();
-    var NewTeeControl = new L.NewTeeControl();
-    var NewBunkerControl = new L.NewBunkerControl();
-    map.addControl(NewTreeControl);
-    map.addControl(NewTeeControl);
-    map.addControl(NewBunkerControl);
+    L.NewFairwayControl = L.NewSVGControl.extend({
+      options: {
+        position: "topleft",
+        callback: () =>
+          this.startPolygon(null, golfStyleLayerConfig["FAIRWAY"]),
+        kind: "Fairway Area",
+        svgPath: fairwayIconSVG,
+      },
+    });
 
-    map.addControl(new L.NewMarkerControl());
-    map.addControl(new L.NewLineControl());
-    map.addControl(new L.NewPolygonControl());
-    map.addControl(new L.NewRectangleControl());
+    L.NewTeeControl = L.NewSVGControl.extend({
+      options: {
+        position: "topleft",
+        callback: () => this.startRectangle(null, golfStyleLayerConfig["TEE"]),
+        kind: "Tee Spot",
+        svgPath: teeIconSVG,
+      },
+    });
+
+    L.NewTreeControl = L.NewSVGControl.extend({
+      options: {
+        position: "topleft",
+        callback: () => this.startPolygon(null, golfStyleLayerConfig["TREE"]),
+        kind: "Tree Area",
+        svgPath: treeIconSVG,
+      },
+    });
+
+    L.NewRoughControl = L.NewSVGControl.extend({
+      options: {
+        position: "topleft",
+        callback: () => this.startPolygon(null, golfStyleLayerConfig["ROUGH"]),
+        kind: "Rough Area",
+        svgPath: roughIconSVG,
+      },
+    });
+
+    L.NewCustomControl = L.NewSVGControl.extend({
+      options: {
+        position: "topleft",
+        callback: () => this.startPolygon(null, golfStyleLayerConfig["CUSTOM"]),
+        kind: "Rough Area",
+        svgPath: customIconSVG,
+      },
+    });
+
+    map.addControl(new L.NewGreenControl());
+    map.addControl(new L.NewWaterControl());
+    map.addControl(new L.NewBunkerControl());
+    map.addControl(new L.NewFairwayControl());
+    map.addControl(new L.NewTeeControl());
+    map.addControl(new L.NewTreeControl());
+    map.addControl(new L.NewRoughControl());
+    map.addControl(new L.NewCustomControl());
+
+    //map.addControl(new L.NewMarkerControl());
+    //map.addControl(new L.NewLineControl());
+    //map.addControl(new L.NewPolygonControl());
+    //map.addControl(new L.NewRectangleControl());
     map.addLayer(featuresLayer);
 
     map
@@ -306,9 +344,9 @@ export default class Map extends React.Component {
     const geojson = featuresLayer.toGeoJSON();
     featuresLayer.clearLayers();
     L.geoJson(geojson).eachLayer((layer) => {
-      // Golf Styling Options according to styleLayerConfig - [GOLFPACE]
+      // Golf Styling Options according to golfStyleLayerConfig - [GOLFPACE]
       const updatedOptions =
-        styleLayerConfig[layer.feature.properties["golfCourtType"]];
+        golfStyleLayerConfig[layer.feature.properties["golfCourtType"]];
       layer.options = { ...layer.options, ...updatedOptions };
 
       featuresLayer.addLayer(layer);
@@ -366,22 +404,23 @@ export default class Map extends React.Component {
       featuresLayer.eachLayer(this.bindLayerPopup);
     }
   }
-  startLine = () => {
+  startLine = (latLng, options) => {
     const { map } = this.state;
-    map.editTools.startPolyline();
+    map.editTools.startPolyline(latLng, options);
   };
   startPolygon = (latLng, options) => {
     const { map } = this.state;
     const createdPolygon = map.editTools.startPolygon(latLng, options);
     return createdPolygon;
   };
-  startRectangle = () => {
+  startRectangle = (latLng, options) => {
     const { map } = this.state;
-    map.editTools.startRectangle();
+    map.editTools.startRectangle(latLng, options);
   };
-  startMarker = () => {
+  startMarker = (latLng, options) => {
     const { map } = this.state;
-    map.editTools.startMarker();
+    const createdMarker = map.editTools.startMarker(latLng, options);
+    return createdMarker;
   };
   render() {
     return <div className="flex-auto" ref={this.mapRef} />;
