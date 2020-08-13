@@ -578,3 +578,12 @@
 }
 
 /* AppDev Golf Custom CSS */
+
+.leaflet-div-icon {
+  background: #fff;
+  border: 1px solid #666;
+}
+.leaflet-marker-draggable {
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
