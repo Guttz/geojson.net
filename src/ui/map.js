@@ -165,7 +165,6 @@ export default class Map extends React.Component {
           link = L.DomUtil.create("a", "", container);
 
         link.href = "#";
-        link.title = "Create a new " + this.options.kind;
         const iconContainer = link.appendChild(document.createElement("div"));
         ReactDOM.render(
           <div>

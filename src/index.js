@@ -180,12 +180,12 @@ class App extends React.Component {
                     layer={layer}
                     setLayer={setLayer}
                   />
-                  <div
+                  {/* <div
                     onClick={this.toggleLayerModal}
                     className="f6 fw7 dib pa2 no-underline bg-white hover-bg-light-blue black pointer"
                   >
                     Add layer
-                  </div>
+                  </div> */}
                   <span onClick={this.togglePanel}>
                     {showPanel ? "▷" : "◁"}
                   </span>

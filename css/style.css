@@ -78,8 +78,11 @@ div#geojsonnet .leaflet-bar a:hover {
 
 .golf-mark a:hover {
   color: #fff;
-  font-size: 12px;
+  font-size: 14px;
   width: 200px;
+  transition: width 0.1s, font-size 0.2s;
+  transition-delay: 0.05s;
+  transition-timing-function: linear;
 }
 
 div#geojsonnet .leaflet-bar a:hover {
