@@ -59,19 +59,33 @@ button {
   margin-left: 35px;
 }
 
-div#geojsonnet .leaflet-bar,
-div#geojsonnet .leaflet-bar a {
-  border: none;
-  border-radius: 0;
-}
-
 div#geojsonnet .leaflet-bar a {
   background: var(--white);
 }
 
 div#geojsonnet .leaflet-bar a:hover {
   background: var(--blue);
+}
+
+.golf-mark a {
+  color: black;
+  font-size: 0px;
+}
+
+.golf-mark a img {
+  float: left;
+}
+
+.golf-mark a:hover {
   color: #fff;
+  font-size: 12px;
+  width: 200px;
+}
+
+div#geojsonnet .leaflet-bar a:hover {
+  background: var(--blue);
+  color: #fff;
+  /* width: 200px; */
 }
 
 div#geojsonnet .leaflet-container {

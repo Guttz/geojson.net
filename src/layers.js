@@ -7,7 +7,11 @@ export const layers = [
     id: "mapbox",
     layer: L.tileLayer(
       "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=" +
-        token
+        token,
+      {
+        maxNativeZoom:20,
+        maxZoom:20
+      }
     )
   },
   {
@@ -15,7 +19,11 @@ export const layers = [
     id: "satellite",
     layer: L.tileLayer(
       "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.png?access_token=" +
-        token
+        token,
+      {
+        maxNativeZoom:20,
+        maxZoom:20
+      }
     )
   },
   {
@@ -24,6 +32,10 @@ export const layers = [
     layer: L.tileLayer("https://a.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+    }, 
+    {
+      maxNativeZoom:20,
+      maxZoom:20
     })
   } /*,
   {

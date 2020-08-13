@@ -51,6 +51,8 @@ export default class Map extends React.Component {
       editOptions: {
         featuresLayer,
       },
+      maxNativeZoom: 20,
+      maxZoom: 20,
     });
     const { layer } = this.props;
     L.control.scale().setPosition("bottomright").addTo(map);
@@ -158,7 +160,7 @@ export default class Map extends React.Component {
       onAdd: function (map) {
         var container = L.DomUtil.create(
             "div",
-            "leaflet-control leaflet-bar bg-white black hover-bg-yellow hover-white"
+            "leaflet-control leaflet-bar golf-mark"
           ),
           link = L.DomUtil.create("a", "", container);
 
@@ -167,7 +169,13 @@ export default class Map extends React.Component {
         const iconContainer = link.appendChild(document.createElement("div"));
         ReactDOM.render(
           <div>
-            <img src={this.options.svgPath} alt="Tree Marker" />
+            <img
+              style={{ display: "inline-block" }}
+              width={50}
+              src={this.options.svgPath}
+              alt={this.options.kind + "Marker"}
+            />
+            <span style={{ display: "inline-block" }}>{this.options.kind}</span>
           </div>,
           iconContainer
         );
