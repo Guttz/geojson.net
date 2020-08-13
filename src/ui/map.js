@@ -5,6 +5,7 @@ import "leaflet-hash";
 import "leaflet-editable";
 import marker from "../map/marker";
 import Popup from "./popup";
+import DeleteFeature from "./golf_popup";
 import geojsonRewind from "geojson-rewind";
 import simplestyle from "./simplestyle";
 import iconRetinaUrl from "../../css/marker-icon-2x.png";
@@ -274,8 +275,8 @@ export default class Map extends React.Component {
     map
       .on("editable:dragend", this.updateFromMap)
       .on("editable:created", this.updateFromMap)
-      .on("editable:drawing:commit", this.styleGolfMapIsGeoJson)
-      .on("editable:editing", this.updateFromMap);
+      .on("editable:drawing:commit", this.styleGolfMapIsGeoJson);
+    //.on("editable:editing", this.updateFromMap);
 
     this.setState({
       map,
@@ -287,8 +288,7 @@ export default class Map extends React.Component {
       layer.bindPopup(
         L.popup(
           {
-            closeButton: true,
-            minWidth: 320,
+            closeButton: false,
             maxWidth: 500,
             maxHeight: 400,
             autoPanPadding: [5, 45],
@@ -319,15 +319,23 @@ export default class Map extends React.Component {
   makePopup = (layer) => {
     const { setGeojson } = this.props;
     const div = document.createElement("div");
-    const popup = ReactDOM.render(
-      <Popup
-        layer={layer}
-        editProperties={(update) => this.editProperties(update, layer)}
-        setGeojson={setGeojson}
-        popupRemoveLayer={this.popupRemoveLayer}
-      />,
-      div
-    );
+    if (layer.feature.properties.golfCourtType) {
+      ReactDOM.render(
+        <DeleteFeature
+          layer={layer}
+          editProperties={(update) => this.editProperties(update, layer)}
+          setGeojson={setGeojson}
+          popupRemoveLayer={this.popupRemoveLayer}
+        />,
+        div
+      );
+    } else {
+      ReactDOM.render(
+        <Popup layer={layer} popupRemoveLayer={this.popupRemoveLayer} />,
+        div
+      );
+    }
+
     div.className = "ispopup";
     return div;
   };
@@ -367,7 +375,7 @@ export default class Map extends React.Component {
       target.editor.newHole(e.latlng);
     } else {
       // Adding edit toggle on click - [GOLFPACE]
-      target.toggleEdit()
+      target.toggleEdit();
     }
   };
   updateFromMap = () => {
@@ -380,7 +388,6 @@ export default class Map extends React.Component {
     let geojson = geojsonRewind(featuresLayer.toGeoJSON());
     setGeojson(geojson, "map");
     featuresLayer.eachLayer(this.bindLayerPopup);
-    
   };
   componentDidUpdate(prevProps, prevState) {
     const { baseLayerGroup, map } = this.state;
@@ -406,6 +413,7 @@ export default class Map extends React.Component {
         featuresLayer.addLayer(layer);
         layer.enableEdit();
       });
+
       featuresLayer.eachLayer(this.bindLayerPopup);
     }
   }
