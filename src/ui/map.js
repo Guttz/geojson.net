@@ -287,11 +287,12 @@ export default class Map extends React.Component {
       layer.bindPopup(
         L.popup(
           {
-            closeButton: false,
+            closeButton: true,
             minWidth: 320,
             maxWidth: 500,
             maxHeight: 400,
             autoPanPadding: [5, 45],
+            closeOnClick: true,
             classname: "geojsonnet-feature",
           },
           layer
@@ -351,9 +352,10 @@ export default class Map extends React.Component {
 
       featuresLayer.addLayer(layer);
       // layer must be added before editing can be enabled.
-      layer.enableEdit();
+      //layer.enableEdit();
       layer.on("click", this.clickPolygon);
     });
+
     this.updateFromMap(e);
   };
   clickPolygon = (e) => {
@@ -363,6 +365,9 @@ export default class Map extends React.Component {
       target.editEnabled()
     ) {
       target.editor.newHole(e.latlng);
+    } else {
+      // Adding edit toggle on click - [GOLFPACE]
+      target.toggleEdit()
     }
   };
   updateFromMap = () => {
@@ -375,9 +380,9 @@ export default class Map extends React.Component {
     let geojson = geojsonRewind(featuresLayer.toGeoJSON());
     setGeojson(geojson, "map");
     featuresLayer.eachLayer(this.bindLayerPopup);
+    
   };
   componentDidUpdate(prevProps, prevState) {
-    console.log("updated");
     const { baseLayerGroup, map } = this.state;
     const { showPanel, layer, geojson, changeFrom } = this.props;
     if (prevProps.showPanel !== showPanel) {
